@@ -1,8 +1,12 @@
 import { useEffect, useReducer } from 'react';
 import Header from './Header';
 import Main from './Main';
+import Loader from './Loader';
+import Error from './Error';
+import StartScreen from './StartScreen';
+import QuestionComponent from './QuestionComponent';
 
-interface Question {
+export interface Question {
   question: string;
   options: string[];
   correctOption: number;
@@ -11,6 +15,7 @@ interface Question {
 interface State {
   questions: Question[];
   status: 'loading' | 'error' | 'ready' | 'active' | 'finished';
+  index: number;
 }
 
 interface QuizAction {
@@ -20,26 +25,34 @@ interface QuizAction {
 const initialState = {
   questions: [],
   status: 'loading',
+  index: 0,
 };
 
-enum QuizActionKind {
+export enum QuizActionKind {
   DataReceived = 'dataReceived',
-  Error = 'error',
+  ErrorAction = 'error',
+  Start = 'start',
 }
 
 function reducer(state: State, action: QuizAction) {
   switch (action.type) {
     case QuizActionKind.DataReceived:
       return { ...state, questions: action.payload, status: 'ready' };
-    case QuizActionKind.Error:
+    case QuizActionKind.ErrorAction:
       return { ...state, status: 'error' };
+    case QuizActionKind.Start:
+      return { ...state, status: 'active' };
     default:
       throw new Error('Invalid action type');
   }
 }
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, status, index }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+  const numQuestions = questions.length;
   useEffect(function () {
     fetch('http://localhost:8000/questions')
       .then((response) => response.json())
@@ -52,8 +65,14 @@ export default function App() {
     <div className="app">
       <Header />
       <Main>
-        <p>1/15</p>
-        <p>Question?</p>
+        {status === 'loading' && <Loader />}
+        {status === 'error' && <Error />}
+        {status === 'ready' && (
+          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+        )}
+        {status === 'active' && (
+          <QuestionComponent question={questions[index]} />
+        )}
       </Main>
     </div>
   );

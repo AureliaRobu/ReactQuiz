@@ -1,4 +1,4 @@
-import { QuizActionKind } from './App';
+import { QuizActionKind } from '../Interfaces/interfaces';
 
 function StartScreen({
   numQuestions,

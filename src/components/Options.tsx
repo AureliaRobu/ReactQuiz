@@ -1,12 +1,12 @@
 import { Question, QuizActionKind } from '../Interfaces/interfaces';
+import { useQuiz } from '../contexts/QuizContext';
 
 interface OptionsProps {
   question: Question;
-  dispatch: any;
-  answer: number | null;
 }
 
-function Options({ question, dispatch, answer }: OptionsProps) {
+function Options({ question }: OptionsProps) {
+  const { answer, dispatch } = useQuiz();
   const hasAnswered = answer !== null;
   return (
     <div className="options">

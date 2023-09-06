@@ -1,21 +1,14 @@
 import { Question } from '../Interfaces/interfaces';
 import Options from './Options';
+import { useQuiz } from '../contexts/QuizContext';
 
-interface QuestionComponentProps {
-  question: Question;
-  dispatch: any;
-  answer: number | null;
-}
-
-function QuestionComponent({
-  question,
-  dispatch,
-  answer,
-}: QuestionComponentProps) {
+function QuestionComponent() {
+  const { questions, index } = useQuiz();
+  const question: Question = questions[index];
   return (
     <div>
       <h4>{question.question}</h4>
-      <Options question={question} dispatch={dispatch} answer={answer} />
+      <Options question={question} />
     </div>
   );
 }

@@ -1,18 +1,8 @@
 import { QuizActionKind } from '../Interfaces/interfaces';
+import { useQuiz } from '../contexts/QuizContext';
 
-interface NextButtonProps {
-  dispatch: any;
-  answer: number | null;
-  index: number;
-  numQuestions: number;
-}
-
-function NextButton({
-  dispatch,
-  answer,
-  index,
-  numQuestions,
-}: NextButtonProps) {
+function NextButton() {
+  const { answer, dispatch, index, numQuestions } = useQuiz();
   if (answer === null) return null;
   if (index < numQuestions - 1)
     return (
